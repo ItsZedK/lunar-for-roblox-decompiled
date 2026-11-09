@@ -1,0 +1,11 @@
+# original binaries stay out of the repo
+*.exe
+*.dll
+*.node
+*.7z
+*.asar
+*.pak
+*.bin
+lunar-extracted/
+app-asar/
+node_modules/

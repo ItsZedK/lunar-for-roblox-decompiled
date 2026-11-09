@@ -1,0 +1,11 @@
+# Outline of preload/index.js (1268 lines)
+
+     24  const     preload
+     25  const     electron
+     26  function  handler
+     29  const     IPC_HANDLER_SCHEMA
+   1078  const     HANDLER_METHODS
+   1084  function  createApi
+   1096  function  createEventSubscriber
+   1105  const     baseApi
+   1106  const     api
