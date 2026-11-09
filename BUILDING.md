@@ -1,14 +1,15 @@
 # Rebuilding the portable exe
 
-The repo has no binaries in it (`.gitignore` blocks them), so bring your own
-copy of the app. You need one of:
+Moonsworth took the package down, so it's mirrored on this repo's
+[Releases](https://github.com/chiikabu/lunar-for-roblox-decompiled/releases/tag/v1.0.16)
+page (`lunar-for-roblox-1.0.16-x64.nsis.7z`, plus the original setup exe).
+The build script can fetch and hash-verify it for you (`-Download`, below).
+SHA-512 of the real 1.0.16 package:
+`97C042A7F202992D6448DF2D586A9298E9ACA94B650757A68278E428A54F4AB4F6125594AF6EABF96DAEAE2797EB0AA89FE7D5DCD640D60DD8F06F64A184F923`
 
-- `lunar-for-roblox-1.0.16-x64.nsis.7z` - the package the official installer
-  used to download. The download servers are dead, so this means a local copy.
-  SHA-512 of the real 1.0.16 package:
-  `97C042A7F202992D6448DF2D586A9298E9ACA94B650757A68278E428A54F4AB4F6125594AF6EABF96DAEAE2797EB0AA89FE7D5DCD640D60DD8F06F64A184F923`
-- or an extracted app folder (the result of unpacking that `.7z`, i.e. a
-  folder containing `LunarForRoblox.exe` and `resources/app.asar`).
+Alternatives: a local copy of that `.7z`, or an extracted app folder (the
+result of unpacking it, i.e. a folder containing `LunarForRoblox.exe` and
+`resources/app.asar`).
 
 If you only have the official `lunar-for-roblox-1.0.16-setup.exe`, note it
 can't fetch the package anymore, but it will use a local package file: put
@@ -24,7 +25,10 @@ Framework compiler (`csc.exe`) both ship with Windows.
 ```powershell
 cd build
 
-# from the downloaded package:
+# easiest: fetch the package from this repo's Releases and build
+.\build-portable.ps1 -Download
+
+# from a package you already have:
 .\build-portable.ps1 -Package ..\lunar-for-roblox-1.0.16-x64.nsis.7z
 
 # or from an already-extracted app folder:

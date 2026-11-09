@@ -4,15 +4,20 @@ with the full app embedded. Nothing is downloaded by this script - you
 supply the app files yourself (see BUILDING.md).
 
 Examples:
+  .\build-portable.ps1 -Download
   .\build-portable.ps1 -Package ..\lunar-for-roblox-1.0.16-x64.nsis.7z
   .\build-portable.ps1 -AppDir  ..\lunar-extracted
 #>
 param(
     [string]$Package,
     [string]$AppDir,
+    [switch]$Download,
     [string]$Version = "1.0.16",
     [string]$OutFile
 )
+
+$ReleasePackageUrl = "https://github.com/chiikabu/lunar-for-roblox-decompiled/releases/download/v1.0.16/lunar-for-roblox-1.0.16-x64.nsis.7z"
+$ReleasePackageSha512 = "97C042A7F202992D6448DF2D586A9298E9ACA94B650757A68278E428A54F4AB4F6125594AF6EABF96DAEAE2797EB0AA89FE7D5DCD640D60DD8F06F64A184F923"
 
 $ErrorActionPreference = "Stop"
 $root = Split-Path -Parent $PSScriptRoot
@@ -22,13 +27,27 @@ $csc = "$env:WINDIR\Microsoft.NET\Framework64\v4.0.30319\csc.exe"
 if (-not (Test-Path $csc)) { throw "csc.exe not found at $csc (.NET Framework 4.x is required)" }
 if (-not (Get-Command tar.exe -ErrorAction SilentlyContinue)) { throw "tar.exe not found (ships with Windows 10+)" }
 if ($Package -and $AppDir) { throw "Pass either -Package or -AppDir, not both" }
-if (-not $Package -and -not $AppDir) { throw "Pass -Package <nsis.7z> or -AppDir <folder containing LunarForRoblox.exe>" }
+if (-not $Package -and -not $AppDir -and -not $Download) { throw "Pass -Package <nsis.7z>, -AppDir <folder containing LunarForRoblox.exe>, or -Download" }
 
 $work = Join-Path $PSScriptRoot "work"
 if (Test-Path $work) { Remove-Item $work -Recurse -Force }
 New-Item -ItemType Directory -Force $work | Out-Null
 
 try {
+    # 0. -Download: grab the original package from this repo's GitHub Release
+    #    (the official download servers are gone) and verify its SHA-512.
+    if ($Download) {
+        $Package = Join-Path $root "lunar-for-roblox-1.0.16-x64.nsis.7z"
+        if (-not (Test-Path $Package)) {
+            Write-Host "Downloading package from GitHub Release ..."
+            curl.exe -L --fail -o $Package $ReleasePackageUrl
+            if ($LASTEXITCODE -ne 0) { throw "download failed" }
+        }
+        $actual = (Get-FileHash $Package -Algorithm SHA512).Hash
+        if ($actual -ne $ReleasePackageSha512) { throw "SHA-512 mismatch on package: $actual" }
+        Write-Host "Package SHA-512 verified."
+    }
+
     # 1. Get the app files into $appFiles
     if ($Package) {
         $appFiles = Join-Path $work "app"
