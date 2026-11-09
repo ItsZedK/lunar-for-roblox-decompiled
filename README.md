@@ -12,6 +12,7 @@ installer around it, and the native DLLs it ships with.
   `installer/`, `addons/` and `chromium/` for the rest
 - `docs/` - index of IPC channels/services, bundle outlines, owutility notes
 - `tools/` - the scripts used to pull it apart
+- `build/` - source + script to rebuild a portable exe (see `BUILDING.md`)
 
 ## Reproducing
 
@@ -20,8 +21,7 @@ installer around it, and the native DLLs it ships with.
 python tools/extract_nsis.py lunar-for-roblox-1.0.16-setup.exe out/
 python tools/nsis_dump.py lunar-for-roblox-1.0.16-setup.exe script.txt
 
-# the actual app payload is downloaded by the installer, grab it directly
-curl -O https://appupdates.lunarrobloxprod.com/lunar-for-roblox-1.0.16-x64.nsis.7z
+# the actual app payload (dead servers now, use a local copy - see BUILDING.md)
 tar -xf lunar-for-roblox-1.0.16-x64.nsis.7z
 npx @electron/asar extract resources/app.asar app
 ```
